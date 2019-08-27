@@ -11,7 +11,7 @@ import (
 	peer "github.com/libp2p/go-libp2p-core/peer"
 
 	host "github.com/libp2p/go-libp2p-core/host"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/libp2p/go-libp2p-core/routing"
 	"go.uber.org/zap"
 )
 
@@ -60,7 +60,7 @@ func DefaultBootstrapPeers() ([]libcore.PeerAddrInfo, error) {
 // so that we have a persistent set of peers to boot from, otherwise we just do a default bootstrap
 // The final list of bootstrap peers is at most 10 randomly selected from the peerstore, combined
 // with the deafult libp2p bootstrap peers
-func DynamicBootstrap(ctx context.Context, logger *zap.Logger, dt *dht.IpfsDHT, hst host.Host) error {
+func DynamicBootstrap(ctx context.Context, logger *zap.Logger, dt routing.Routing, hst host.Host) error {
 	defaultPeers, err := DefaultBootstrapPeers()
 	if err != nil {
 		return err
@@ -89,7 +89,7 @@ func DynamicBootstrap(ctx context.Context, logger *zap.Logger, dt *dht.IpfsDHT, 
 }
 
 // Bootstrap is used to connect our libp2p host to the specified set of peers
-func Bootstrap(ctx context.Context, logger *zap.Logger, dt *dht.IpfsDHT, hst host.Host, peers []libcore.PeerAddrInfo) error {
+func Bootstrap(ctx context.Context, logger *zap.Logger, dt routing.Routing, hst host.Host, peers []libcore.PeerAddrInfo) error {
 	var (
 		connected = make(chan bool, len(peers))
 		wg        sync.WaitGroup
